@@ -15,15 +15,6 @@ var {
   View,
 } = React;
 
-var NAMS = [
-  {number: '101A', building: 'Mrak', department: 'Ag Biz'},
-  {number: '101B', building: 'Mrak', department: 'Ag Biz'},
-  {number: '101C', building: 'Mrak', department: 'Ag Biz'},
-  {number: '101D', building: 'Mrak', department: 'Ag Biz'},
-  {number: '101E', building: 'Mrak', department: 'Ag Biz'},
-  {number: '103', building: 'Bainer', department: 'Geology'}];
-
-var SearchUrl = 'https://caesdev:3tKCPScPQPW3J4pX@aws-us-east-1-portal9.dblayer.com:10241/datanams/_search';
 
 var NamNav = React.createClass({
   render: function(){
@@ -41,7 +32,7 @@ var NamNav = React.createClass({
 var NamDetail = React.createClass({
   render: function(){
     return (
-      <View style={styles.container}>
+      <View style={styles.centeredContainer}>
         <Text>{this.props.nam.namNumber}: </Text>
         <Text>{this.props.nam.building}</Text>
         <Text style={styles.right}>{this.props.nam.department}</Text>
@@ -98,14 +89,22 @@ var NamList = React.createClass({
       .then((responseData) => {
         this.setState({
           nams: responseData.hits.hits,
+          loading: false
         });
       })
       .done();
   },
   render: function(){
+    if (this.state.loading){
+      return (
+        <View style={styles.centeredContainer}>
+        <Text>Loading... </Text>
+        </View>
+      );
+    }
     var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
     return (
-      <View style={styles.navigationContainer}>
+      <View style={styles.container}>
         <ListView
           dataSource={dataSource}
           renderRow={(nam)=><NamCell nam={nam} onSelected={this.onSelected} />}
@@ -125,14 +124,18 @@ var namstrmobile = React.createClass({
 });
 
 var styles = StyleSheet.create({
+  navigationContainer: {
+    flex: 1,
+  },
   container: {
+    marginTop: 65,
+    backgroundColor: '#F5FCFF'
+  },
+  centeredContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  navigationContainer: {
-        flex: 1
   },
   row: {
     flexDirection: "row",
