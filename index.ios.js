@@ -35,18 +35,28 @@ var HomeComponent = React.createClass({
   getInitialState: function() {
     return {
       text: '',
-      nams: []
+      nams: [],
+      loading: false
     };
   },
   onSearch: function(){
     this.fetchData();
   },
+  onSelected: function(nam){
+    this.props.navigator.push({
+        title: "Nam Detail",
+        component: NamDetail,
+        passProps: {nam: nam},
+    });
+  },
   fetchData: function() {
+    this.setState({loading: true});
     fetch(SearchUrl)
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({
           nams: responseData.hits.hits,
+          loading: false
         });
       })
       .done();
@@ -60,11 +70,11 @@ var HomeComponent = React.createClass({
   },
   renderNamList: function(){
     return (
-      <NamList nams={this.state.nams} />
+      <NamList nams={this.state.nams} onSelected={this.onSelected} />
     );
   },
   render: function(){
-    var namList = this.state.nams.length > 0 ? this.renderNamList() : this.renderLoading();
+    var namList = !this.state.loading ? this.renderNamList() : this.renderLoading();
 
     return (
       <View style={styles.container}>
@@ -127,11 +137,7 @@ var NamList = React.createClass({
     };
   },
   onSelected: function(nam){
-    this.props.navigator.push({
-        title: "Nam Detail",
-        component: NamDetail,
-        passProps: {nam: nam},
-    });
+    this.props.onSelected(nam);
   },
   render: function(){
     var dataSource = this.state.dataList.cloneWithRows(this.props.nams);
