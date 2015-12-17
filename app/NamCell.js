@@ -20,10 +20,16 @@ var NamCell = React.createClass({
   render: function(){
     return (
       <TouchableHighlight onPress={(this.namSelected)}>
+      <View>
       <View style={styles.row}>
-        <Text>{this.state.nam.namNumber}: </Text>
-        <Text>{this.state.nam.building}</Text>
-        <Text>{this.state.nam.department}</Text>
+        <Text>
+          #{this.state.nam.namNumber}: {this.state.nam.status}
+        </Text>
+      </View>
+      <View style={styles.row}>
+        <Text>{this.state.nam.building} {this.state.nam.room}</Text>
+      </View>
+      <View style={styles.separator} />
       </View>
       </TouchableHighlight>
     );
@@ -36,8 +42,11 @@ var styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: '#FFFFFF',
     padding: 10,
-    borderBottomWidth: 1,
     borderColor: '#DDDDDD'
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#CCCCCC',
   }
 });
 

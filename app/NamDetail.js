@@ -21,6 +21,10 @@ var NamDetail = React.createClass({
           <Text>{ this.props.nam.status }</Text>
         </View>
         <View style={styles.item}>
+          <Text style={styles.label}>Room</Text>
+          <Text>{ this.props.nam.room }</Text>
+        </View>
+        <View style={styles.item}>
           <Text style={styles.label}>Building</Text>
           <Text>{ this.props.nam.building }</Text>
         </View>
