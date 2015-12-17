@@ -34,7 +34,7 @@ var NamNav = React.createClass({
 var HomeComponent = React.createClass({
   getInitialState: function() {
     return {
-      text: '',
+      query: '',
       nams: [],
       loading: false
     };
@@ -50,8 +50,8 @@ var HomeComponent = React.createClass({
     });
   },
   fetchData: function() {
-    this.setState({loading: true});
-    fetch(SearchUrl)
+    this.setState({nams: [], loading: true});
+    fetch(SearchUrl + '?q=' + this.state.query)
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({
@@ -82,8 +82,8 @@ var HomeComponent = React.createClass({
         style={{height: 40, margin: 20, padding: 2, borderColor: 'gray', borderWidth: 1}}
         autoCorrect={false}
         autoFocus={true}
-        onChangeText={(text) => this.setState({text})}
-        value={this.state.text}
+        onChangeText={(query) => this.setState({query})}
+        value={this.state.query}
         onSubmitEditing={this.onSearch}
         returnKeyType={'search'}
         placeholder={'Search for NAMs'}
