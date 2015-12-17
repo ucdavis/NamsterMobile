@@ -36,10 +36,23 @@ var NamNav = React.createClass({
   }
 });
 
-var NamCell = React.createClass({
+var NamDetail = React.createClass({
   render: function(){
     return (
-      <TouchableHighlight>
+      <View style={styles.container}>
+        <Text>testing</Text>
+      </View>
+    );
+  }
+});
+
+var NamCell = React.createClass({
+  namSelected: function(){
+    this.props.onSelected(this.props.nam);
+  },
+  render: function(){
+    return (
+      <TouchableHighlight onPress={(this.namSelected)}>
       <View style={styles.row}>
         <Text>{this.props.nam.number}: </Text>
         <Text>{this.props.nam.building}</Text>
@@ -59,13 +72,20 @@ var NamList = React.createClass({
       nams: NAMS
     };
   },
+  onSelected: function(nam){
+    this.props.navigator.push({
+        title: "Nam Detail",
+        component: NamDetail,
+        passProps: {nam: nam},
+    });
+  },
   render: function(){
     var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
     return (
       <View style={styles.navigationContainer}>
         <ListView
           dataSource={dataSource}
-          renderRow={(nam)=><NamCell nam={nam} />}
+          renderRow={(nam)=><NamCell nam={nam} onSelected={this.onSelected} />}
           style={styles.listView}
         />
       </View>
