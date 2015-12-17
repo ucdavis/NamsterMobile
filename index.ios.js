@@ -23,6 +23,8 @@ var NAMS = [
   {number: '101E', building: 'Mrak', department: 'Ag Biz'},
   {number: '103', building: 'Bainer', department: 'Geology'}];
 
+var SearchUrl = 'https://caesdev:3tKCPScPQPW3J4pX@aws-us-east-1-portal9.dblayer.com:10241/datanams/_search';
+
 var NamNav = React.createClass({
   render: function(){
     return(
@@ -40,23 +42,30 @@ var NamDetail = React.createClass({
   render: function(){
     return (
       <View style={styles.container}>
-        <Text>testing</Text>
+        <Text>{this.props.nam.namNumber}: </Text>
+        <Text>{this.props.nam.building}</Text>
+        <Text style={styles.right}>{this.props.nam.department}</Text>
       </View>
     );
   }
 });
 
 var NamCell = React.createClass({
+  getInitialState: function() {
+    return {
+      nam: this.props.nam._source
+    };
+  },
   namSelected: function(){
-    this.props.onSelected(this.props.nam);
+    this.props.onSelected(this.state.nam);
   },
   render: function(){
     return (
       <TouchableHighlight onPress={(this.namSelected)}>
       <View style={styles.row}>
-        <Text>{this.props.nam.number}: </Text>
-        <Text>{this.props.nam.building}</Text>
-        <Text style={styles.right}>{this.props.nam.department}</Text>
+        <Text>{this.state.nam.namNumber}: </Text>
+        <Text>{this.state.nam.building}</Text>
+        <Text style={styles.right}>{this.state.nam.department}</Text>
       </View>
       </TouchableHighlight>
     );
@@ -69,7 +78,8 @@ var NamList = React.createClass({
       dataList: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
       }),
-      nams: NAMS
+      loading: true,
+      nams: []
     };
   },
   onSelected: function(nam){
@@ -78,6 +88,19 @@ var NamList = React.createClass({
         component: NamDetail,
         passProps: {nam: nam},
     });
+  },
+  componentDidMount: function() {
+    this.fetchData();
+  },
+  fetchData: function() {
+    fetch(SearchUrl)
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.setState({
+          nams: responseData.hits.hits,
+        });
+      })
+      .done();
   },
   render: function(){
     var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
