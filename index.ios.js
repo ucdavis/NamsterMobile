@@ -10,11 +10,13 @@ var {
   StyleSheet,
   TouchableHighlight,
   Text,
+  TextInput,
   ListView,
   NavigatorIOS,
   View,
 } = React;
 
+var SearchUrl = 'https://caesdev:3tKCPScPQPW3J4pX@aws-us-east-1-portal9.dblayer.com:10241/datanams/_search';
 
 var NamNav = React.createClass({
   render: function(){
@@ -23,8 +25,61 @@ var NamNav = React.createClass({
         style={styles.navigationContainer}
         initialRoute={{
         title: "Nam List",
-        component: NamList,
+        component: HomeComponent,
     }} />
+    );
+  }
+});
+
+var HomeComponent = React.createClass({
+  getInitialState: function() {
+    return {
+      text: '',
+      nams: []
+    };
+  },
+  onSearch: function(){
+    this.fetchData();
+  },
+  fetchData: function() {
+    fetch(SearchUrl)
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.setState({
+          nams: responseData.hits.hits,
+        });
+      })
+      .done();
+  },
+  renderLoading: function(){
+    return (
+      <View style={styles.centeredContainer}>
+      <Text>Loading... </Text>
+      </View>
+    );
+  },
+  renderNamList: function(){
+    return (
+      <NamList nams={this.state.nams} />
+    );
+  },
+  render: function(){
+    var namList = this.state.nams.length > 0 ? this.renderNamList() : this.renderLoading();
+
+    return (
+      <View style={styles.container}>
+      <TextInput
+        style={{height: 40, margin: 20, padding: 2, borderColor: 'gray', borderWidth: 1}}
+        autoCorrect={false}
+        autoFocus={true}
+        onChangeText={(text) => this.setState({text})}
+        value={this.state.text}
+        onSubmitEditing={this.onSearch}
+        returnKeyType={'search'}
+        placeholder={'Search for NAMs'}
+      />
+      {namList}
+      </View>
     );
   }
 });
@@ -68,9 +123,7 @@ var NamList = React.createClass({
     return {
       dataList: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      loading: true,
-      nams: []
+      })
     };
   },
   onSelected: function(nam){
@@ -80,31 +133,10 @@ var NamList = React.createClass({
         passProps: {nam: nam},
     });
   },
-  componentDidMount: function() {
-    this.fetchData();
-  },
-  fetchData: function() {
-    fetch(SearchUrl)
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({
-          nams: responseData.hits.hits,
-          loading: false
-        });
-      })
-      .done();
-  },
   render: function(){
-    if (this.state.loading){
-      return (
-        <View style={styles.centeredContainer}>
-        <Text>Loading... </Text>
-        </View>
-      );
-    }
-    var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
+    var dataSource = this.state.dataList.cloneWithRows(this.props.nams);
     return (
-      <View style={styles.container}>
+      <View style={styles.navigationContainer}>
         <ListView
           dataSource={dataSource}
           renderRow={(nam)=><NamCell nam={nam} onSelected={this.onSelected} />}
