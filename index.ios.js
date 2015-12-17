@@ -12,6 +12,7 @@ var {
   Text,
   TextInput,
   ListView,
+  ScrollView,
   NavigatorIOS,
   View,
 } = React;
@@ -82,6 +83,7 @@ var HomeComponent = React.createClass({
         style={{height: 40, margin: 20, padding: 2, borderColor: 'gray', borderWidth: 1}}
         autoCorrect={false}
         autoFocus={true}
+        clearButtonMode={'always'}
         onChangeText={(query) => this.setState({query})}
         value={this.state.query}
         onSubmitEditing={this.onSearch}
@@ -95,16 +97,41 @@ var HomeComponent = React.createClass({
 });
 
 var NamDetail = React.createClass({
-  render: function(){
+  render: function() {
     return (
-      <View style={styles.centeredContainer}>
-        <Text>{this.props.nam.namNumber}: </Text>
-        <Text>{this.props.nam.building}</Text>
-        <Text style={styles.right}>{this.props.nam.department}</Text>
-      </View>
+      <ScrollView style={styles.scrollview}>
+        <View style={styles.item}>
+          <Text style={styles.label}>#</Text>
+          <Text>{ this.props.nam.namNumber }</Text>
+        </View>
+        <View style={styles.item}>
+          <Text style={styles.label}>Status</Text>
+          <Text>{ this.props.nam.status }</Text>
+        </View>
+        <View style={styles.item}>
+          <Text style={styles.label}>Building</Text>
+          <Text>{ this.props.nam.building }</Text>
+        </View>
+        <View style={styles.item}>
+          <Text style={styles.label}>Department</Text>
+          <Text>{ this.props.nam.department }</Text>
+        </View>
+      </ScrollView>
     );
   }
 });
+//
+// var NamDetail = React.createClass({
+//   render: function(){
+//     return (
+//       <View style={styles.centeredContainer}>
+//         <Text>{this.props.nam.namNumber}: </Text>
+//         <Text>{this.props.nam.building}</Text>
+//         <Text style={styles.right}>{this.props.nam.department}</Text>
+//       </View>
+//     );
+//   }
+// });
 
 var NamCell = React.createClass({
   getInitialState: function() {
@@ -186,6 +213,20 @@ var styles = StyleSheet.create({
   listView: {
     paddingTop: 20,
     backgroundColor: '#F5FCFF',
+  },
+  scrollview: {
+    height: 740,
+    backgroundColor: "#FFFFFF"
+  },
+  item: {
+    marginTop: 10,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "#DDDDDD",
+  },
+  label: {
+    color: "#007AFF",
+    marginBottom: 5
   },
 });
 
