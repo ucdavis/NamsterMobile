@@ -11,70 +11,72 @@ var {
   TouchableHighlight,
   Text,
   ListView,
+  NavigatorIOS,
   View,
 } = React;
 
 var NAMS = [
   {number: '101A', building: 'Mrak', department: 'Ag Biz'},
+  {number: '101B', building: 'Mrak', department: 'Ag Biz'},
+  {number: '101C', building: 'Mrak', department: 'Ag Biz'},
+  {number: '101D', building: 'Mrak', department: 'Ag Biz'},
+  {number: '101E', building: 'Mrak', department: 'Ag Biz'},
   {number: '103', building: 'Bainer', department: 'Geology'}];
 
-var namstrmobile = React.createClass({
-  getInitialState: function() {
-    return {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      loaded: false,
-    };
-  },
-  componentDidMount: function() {
-    this.fetchData();
-  },
-  fetchData: function() {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(NAMS),
-      loaded: true
-    });
-    // fetch(REQUEST_URL)
-    //   .then((response) => response.json())
-    //   .then((responseData) => {
-    //     this.setState({
-    //       dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
-    //       loaded: true,
-    //     });
-    //   })
-    //   .done();
-  },
-  render: function() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
-    }
-   return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderNam}
-        style={styles.listView}
-      />
+var NamNav = React.createClass({
+  render: function(){
+    return(
+    <NavigatorIOS
+        style={styles.navigationContainer}
+        initialRoute={{
+        title: "Nam List",
+        component: NamList,
+    }} />
     );
-  },
-  renderLoadingView: function() {
-    return (
-      <View style={styles.container}>
-        <Text>
-          Loading nams...
-        </Text>
-      </View>
-    );
-  },
-  renderNam: function(nam){
+  }
+});
+
+var NamCell = React.createClass({
+  render: function(){
     return (
       <TouchableHighlight>
       <View style={styles.row}>
-        <Text>{nam.number}: </Text>
-        <Text>{nam.building}</Text>
-        <Text style={styles.right}>{nam.department}</Text>
+        <Text>{this.props.nam.number}: </Text>
+        <Text>{this.props.nam.building}</Text>
+        <Text style={styles.right}>{this.props.nam.department}</Text>
       </View>
       </TouchableHighlight>
+    );
+  }
+});
+
+var NamList = React.createClass({
+  getInitialState: function() {
+    return {
+      dataList: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2,
+      }),
+      nams: NAMS
+    };
+  },
+  render: function(){
+    var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
+    return (
+      <View style={styles.navigationContainer}>
+        <ListView
+          dataSource={dataSource}
+          renderRow={(nam)=><NamCell nam={nam} />}
+          style={styles.listView}
+        />
+      </View>
+    );
+  }
+});
+
+var namstrmobile = React.createClass({
+  render: function() {
+   return (
+      <NamNav />
     );
   }
 });
@@ -85,6 +87,9 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  navigationContainer: {
+        flex: 1
   },
   row: {
     flexDirection: "row",
