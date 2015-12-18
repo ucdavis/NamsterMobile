@@ -15,7 +15,7 @@ var {
   View,
 } = React;
 
-var SearchUrl = 'https://caesdev:3tKCPScPQPW3J4pX@aws-us-east-1-portal9.dblayer.com:10241/datanams/_search';
+var SearchUrl = '';
 
 var Search = React.createClass({
   getInitialState: function() {
