@@ -22,7 +22,8 @@ var Search = React.createClass({
     return {
       query: '',
       nams: [],
-      loading: false
+      loading: false,
+      searched: false
     };
   },
   onSearch: function(){
@@ -42,7 +43,8 @@ var Search = React.createClass({
       .then((responseData) => {
         this.setState({
           nams: responseData.hits.hits,
-          loading: false
+          loading: false,
+          searched: true
         });
       })
       .done();
@@ -56,7 +58,7 @@ var Search = React.createClass({
   },
   renderNamList: function(){
     return (
-      <NamList nams={this.state.nams} onSelected={this.onSelected} />
+      <NamList nams={this.state.nams} searched={this.state.searched} onSelected={this.onSelected} />
     );
   },
   render: function(){

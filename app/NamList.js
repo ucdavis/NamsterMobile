@@ -7,7 +7,8 @@ var NamCell = require('./NamCell');
 var {
   StyleSheet,
   View,
-  ListView
+  ListView,
+  Text
 } = React;
 
 var NamList = React.createClass({
@@ -22,6 +23,14 @@ var NamList = React.createClass({
     this.props.onSelected(nam);
   },
   render: function(){
+    if (this.props.searched && this.props.nams.length === 0){
+      return (
+        <View style={styles.centeredContainer}>
+          <Text>No Nams Found</Text>
+        </View>
+      );
+    }
+
     var dataSource = this.state.dataList.cloneWithRows(this.props.nams);
     return (
       <View style={styles.navigationContainer}>
