@@ -33,8 +33,62 @@ var Search = React.createClass({
     this.props.navigator.push({
         title: "Nam Detail",
         component: NamDetail,
-        passProps: {nam: nam},
+        passProps: {nam: nam, onFilterSelected: this.onFilterSelected},
     });
+  },
+  onFilterSelected: function(filter){
+    fetch(SearchUrl, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(this.generateFilter(filter))
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.props.navigator.push({
+          title: "Filter List",
+          component: NamList,
+          passProps: {nams: responseData.hits.hits, searched: true, onSelected: this.onSelected},
+      });
+    })
+    .done();
+
+  },
+  generateFilter: function(filter){
+    var mustClause = [];
+    if (filter.room){
+      mustClause.push({
+        "term": {
+          "exactRoom": filter.room
+        }
+      });
+    }
+    if (filter.building){
+      mustClause.push({
+        "term": {
+          "exactBuilding": filter.building
+        }
+      });
+    }
+    if (filter.department){
+      mustClause.push({
+        "term": {
+          "exactDepartment": filter.department
+        }
+      });
+    }
+
+    return {
+      "filter": {
+        "bool": {
+          "must": [
+            mustClause
+          ]
+        }
+      }
+    };
   },
   fetchData: function() {
     this.setState({nams: [], loading: true});
