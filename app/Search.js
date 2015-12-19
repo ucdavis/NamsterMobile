@@ -32,6 +32,8 @@ var Search = React.createClass({
     this.props.navigator.push({
         title: "Nam Detail",
         component: NamDetail,
+        rightButtonTitle: 'Home',
+        onRightButtonPress: () => this.props.navigator.popToTop(),
         passProps: {nam: nam, onFilterSelected: this.onFilterSelected},
     });
   },
@@ -42,6 +44,8 @@ var Search = React.createClass({
       self.props.navigator.push({
           title: "Filter List",
           component: NamList,
+          rightButtonTitle: 'Home',
+          onRightButtonPress: () => self.props.navigator.popToTop(),
           passProps: {nams: data.hits.hits, searched: true, onSelected: self.onSelected},
       });
     });
