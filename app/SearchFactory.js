@@ -15,7 +15,7 @@ var SearchFactory = {
       .done();
   },
   fetchFilteredData: function(filter, onComplete){
-    fetch(SearchUrl + '?size=20', {
+    fetch(SearchUrl + '?size=50', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
