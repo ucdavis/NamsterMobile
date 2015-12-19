@@ -4,6 +4,7 @@ var React = require('react-native');
 
 var NamDetail = require('./NamDetail');
 var NamList = require('./NamList');
+var SearchFactory = require('./SearchFactory');
 
 var {
   StyleSheet,
@@ -14,8 +15,6 @@ var {
   NavigatorIOS,
   View,
 } = React;
-
-var SearchUrl = '';
 
 var Search = React.createClass({
   getInitialState: function() {
@@ -37,71 +36,27 @@ var Search = React.createClass({
     });
   },
   onFilterSelected: function(filter){
-    fetch(SearchUrl, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(this.generateFilter(filter))
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.props.navigator.push({
+    var self = this;
+
+    SearchFactory.fetchFilteredData(filter, function(data){
+      self.props.navigator.push({
           title: "Filter List",
           component: NamList,
-          passProps: {nams: responseData.hits.hits, searched: true, onSelected: this.onSelected},
+          passProps: {nams: data.hits.hits, searched: true, onSelected: self.onSelected},
       });
-    })
-    .done();
-
-  },
-  generateFilter: function(filter){
-    var mustClause = [];
-    if (filter.room){
-      mustClause.push({
-        "term": {
-          "exactRoom": filter.room
-        }
-      });
-    }
-    if (filter.building){
-      mustClause.push({
-        "term": {
-          "exactBuilding": filter.building
-        }
-      });
-    }
-    if (filter.department){
-      mustClause.push({
-        "term": {
-          "exactDepartment": filter.department
-        }
-      });
-    }
-
-    return {
-      "filter": {
-        "bool": {
-          "must": [
-            mustClause
-          ]
-        }
-      }
-    };
+    });
   },
   fetchData: function() {
-    this.setState({nams: [], loading: true});
-    fetch(SearchUrl + '?q=' + this.state.query)
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({
-          nams: responseData.hits.hits,
-          loading: false,
-          searched: true
-        });
-      })
-      .done();
+    var self = this;
+    self.setState({nams: [], loading: true});
+
+    SearchFactory.fetchQueryData(self.state.query, function(data){
+      self.setState({
+        nams: data.hits.hits,
+        loading: false,
+        searched: true
+      });
+    });
   },
   renderLoading: function(){
     return (
