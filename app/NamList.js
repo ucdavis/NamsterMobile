@@ -3,6 +3,7 @@
 var React = require('react-native');
 
 var NamCell = require('./NamCell');
+var SearchFactory = require('./SearchFactory');
 
 var {
   StyleSheet,
@@ -16,14 +17,49 @@ var NamList = React.createClass({
     return {
       dataList: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
-      })
+      }),
+      nams: [],
+      page: 0,
+      pageSize: 50,
+      loading: false,
+      searched: false
     };
+  },
+  componentWillMount() {
+    console.log('mounted', this.props.query);
+    if (this.props.query){
+      this.fetchData();
+    }
+  },
+  //TODO: handle updating search query
+  // componentWillReceiveProps(props){
+  //   console.log('updated', this.props.query);
+  // },
+  fetchData: function() {
+    var self = this;
+    self.setState({nams: [], loading: true});
+
+    SearchFactory.fetchQueryData(self.props.query, function(data){
+      self.setState({
+        nams: data.hits.hits,
+        loading: false
+      });
+    });
   },
   onSelected: function(nam){
     this.props.onSelected(nam);
   },
+  renderLoading: function(){
+    return (
+      <View style={styles.centeredContainer}>
+      <Text>Loading... </Text>
+      </View>
+    );
+  },
   render: function(){
-    if (this.props.searched && this.props.nams.length === 0){
+    if (this.state.loading){
+      return this.renderLoading();
+    } else if (this.state.nams.length === 0){
       return (
         <View style={styles.centeredContainer}>
           <Text>No Nams Found</Text>
@@ -31,7 +67,7 @@ var NamList = React.createClass({
       );
     }
 
-    var dataSource = this.state.dataList.cloneWithRows(this.props.nams);
+    var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
     return (
       <View style={styles.navigationContainer}>
         <ListView
