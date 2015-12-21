@@ -55,7 +55,7 @@ var Search = React.createClass({
         autoCorrect={false}
         autoFocus={true}
         clearButtonMode={'always'}
-        onChangeText={(searchText) => this.setState({searchText})}
+        onChangeText={(searchText) => this.setState({query: '', searchText})}
         value={this.state.searchText}
         onSubmitEditing={this.onSearch}
         returnKeyType={'search'}
@@ -75,24 +75,6 @@ var styles = StyleSheet.create({
     flex: 1,
     marginTop: 65,
     backgroundColor: '#F5FCFF'
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: '#FFFFFF',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#DDDDDD'
-  },
-  listView: {
-    paddingTop: 20,
-    backgroundColor: '#F5FCFF',
   }
 });
 

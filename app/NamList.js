@@ -32,10 +32,6 @@ var NamList = React.createClass({
       this.filterData();
     }
   },
-  //TODO: handle updating search query
-  // componentWillReceiveProps(props){
-  //   console.log('updated', this.props.query);
-  // },
   filterData: function() {
     var self = this;
     self.setState({nams: [], loading: true});
@@ -81,7 +77,7 @@ var NamList = React.createClass({
 
     var dataSource = this.state.dataList.cloneWithRows(this.state.nams);
     return (
-      <View style={styles.navigationContainer}>
+      <View style={this.props.query ? styles.searchContainer : styles.navigationContainer}>
         <ListView
           dataSource={dataSource}
           renderRow={(nam)=><NamCell nam={nam} onSelected={this.onSelected} />}
@@ -96,6 +92,9 @@ var styles = StyleSheet.create({
   navigationContainer: {
     flex: 1,
     marginTop: 65,
+  },
+  searchContainer: {
+    flex: 1,
   },
   centeredContainer: {
     flex: 1,
