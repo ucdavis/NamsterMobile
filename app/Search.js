@@ -101,6 +101,7 @@ var styles = StyleSheet.create({
     flex: 1,
   },
   container: {
+    flex: 1,
     marginTop: 65,
     backgroundColor: '#F5FCFF'
   },
