@@ -70,9 +70,10 @@ var NamList = React.createClass({
   onEndReached: function(){
     console.log('on end reached called');
     if (this.state.nams.length < this.state.totalHits && !this.fetchingData){
-      this.fetchingData = true;
       //if there are still results out there, grab another pageSize worth
       console.log('going to next page');
+
+      this.fetchingData = true;
       this.loadNams();
     }
   },
