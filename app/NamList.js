@@ -40,7 +40,7 @@ var NamList = React.createClass({
     var self = this;
     self.fetchingData = true;
 
-    SearchFactory.fetchFilteredData(self.props.filter, function(data){
+    SearchFactory.fetchFilteredData(self.props.filter, self.state.page, self.state.pageSize, function(data){
       self.fetchingData = false;
       self.setState({
         nams: self.state.nams.concat(data.hits.hits),
