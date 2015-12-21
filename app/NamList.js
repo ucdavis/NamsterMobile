@@ -21,20 +21,32 @@ var NamList = React.createClass({
       nams: [],
       page: 0,
       pageSize: 50,
-      loading: false,
-      searched: false
+      loading: true
     };
   },
   componentWillMount() {
     console.log('mounted', this.props.query);
     if (this.props.query){
       this.fetchData();
+    } else if (this.props.filter){
+      this.filterData();
     }
   },
   //TODO: handle updating search query
   // componentWillReceiveProps(props){
   //   console.log('updated', this.props.query);
   // },
+  filterData: function() {
+    var self = this;
+    self.setState({nams: [], loading: true});
+
+    SearchFactory.fetchFilteredData(self.props.filter, function(data){
+      self.setState({
+        nams: data.hits.hits,
+        loading: false
+      });
+    });
+  },
   fetchData: function() {
     var self = this;
     self.setState({nams: [], loading: true});
@@ -83,6 +95,13 @@ var NamList = React.createClass({
 var styles = StyleSheet.create({
   navigationContainer: {
     flex: 1,
+    marginTop: 65,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
   listView: {
     paddingTop: 20,

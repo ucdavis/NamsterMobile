@@ -21,7 +21,7 @@ var Search = React.createClass({
     return {
       searchText: '',
       query: '',
-      filter: {}
+      filter: null
     };
   },
   onSearch: function(){
@@ -38,19 +38,16 @@ var Search = React.createClass({
   },
   onFilterSelected: function(filter){
     var self = this;
-
-    SearchFactory.fetchFilteredData(filter, function(data){
-      self.props.navigator.push({
-          title: "Filter List",
-          component: NamList,
-          rightButtonTitle: 'Home',
-          onRightButtonPress: () => self.props.navigator.popToTop(),
-          passProps: {nams: data.hits.hits, searched: true, onSelected: self.onSelected},
-      });
+    self.props.navigator.push({
+        title: "Filter List",
+        component: NamList,
+        rightButtonTitle: 'Home',
+        onRightButtonPress: () => self.props.navigator.popToTop(),
+        passProps: {filter: filter, query: '', onSelected: self.onSelected},
     });
   },
   render: function(){
-    var namList = !this.state.query ? <Text></Text> : <NamList query={this.state.query} onSelected={this.onSelected} />;
+    var namList = !this.state.query && !this.state.filter ? <Text></Text> : <NamList query={this.state.query} onSelected={this.onSelected} />;
     return (
       <View style={styles.container}>
       <TextInput
