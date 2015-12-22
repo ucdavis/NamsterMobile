@@ -4,18 +4,17 @@ var React = require('react-native');
 
 var SearchUrl = '';
 
-// named
 var SearchFactory = {
-  fetchQueryData: function(q, onComplete){
-    fetch(SearchUrl + '?q=' + q)
+  fetchQueryData: function(q, page, pageSize, onComplete){
+    fetch(SearchUrl + `?from=${page*pageSize}&size=${pageSize}&q=${q}&sort=namNumber`)
       .then((response) => response.json())
       .then((responseData) => {
         onComplete(responseData);
       })
       .done();
   },
-  fetchFilteredData: function(filter, onComplete){
-    fetch(SearchUrl + '?size=50', {
+  fetchFilteredData: function(filter, page, pageSize, onComplete){
+    fetch(SearchUrl + `?from=${page*pageSize}&size=${pageSize}&sort=namNumber`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
