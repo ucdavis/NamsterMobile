@@ -17,6 +17,8 @@ Occasionally (and definitely before first run) you'll need to update the depende
 
 # Installing the ASPNET5 runtime on a Mac
 
+**Note there is a bug with the Mac mono runtime that may cause an error running the web server.  Hopefully this will be fixed soon**
+
 Follow the instructions at [Installing ASP.NET 5 On Mac OS X](http://docs.asp.net/en/latest/getting-started/installing-on-mac.html
 ).  You'll need to install the mono runtime which you can do by following the "Install ASP.NET 5 with Visual Studio Code" instructions.
 
