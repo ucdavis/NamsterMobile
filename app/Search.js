@@ -19,14 +19,13 @@ var {
 var Search = React.createClass({
   getInitialState: function() {
     return {
+      searchText: '',
       query: '',
-      nams: [],
-      loading: false,
-      searched: false
+      filter: null
     };
   },
   onSearch: function(){
-    this.fetchData();
+    this.setState({query: this.state.searchText});
   },
   onSelected: function(nam){
     this.props.navigator.push({
@@ -39,44 +38,16 @@ var Search = React.createClass({
   },
   onFilterSelected: function(filter){
     var self = this;
-
-    SearchFactory.fetchFilteredData(filter, function(data){
-      self.props.navigator.push({
-          title: "Filter List",
-          component: NamList,
-          rightButtonTitle: 'Home',
-          onRightButtonPress: () => self.props.navigator.popToTop(),
-          passProps: {nams: data.hits.hits, searched: true, onSelected: self.onSelected},
-      });
+    self.props.navigator.push({
+        title: "Filter List",
+        component: NamList,
+        rightButtonTitle: 'Home',
+        onRightButtonPress: () => self.props.navigator.popToTop(),
+        passProps: {filter: filter, query: '', onSelected: self.onSelected},
     });
-  },
-  fetchData: function() {
-    var self = this;
-    self.setState({nams: [], loading: true});
-
-    SearchFactory.fetchQueryData(self.state.query, function(data){
-      self.setState({
-        nams: data.hits.hits,
-        loading: false,
-        searched: true
-      });
-    });
-  },
-  renderLoading: function(){
-    return (
-      <View style={styles.centeredContainer}>
-      <Text>Loading... </Text>
-      </View>
-    );
-  },
-  renderNamList: function(){
-    return (
-      <NamList nams={this.state.nams} searched={this.state.searched} onSelected={this.onSelected} />
-    );
   },
   render: function(){
-    var namList = !this.state.loading ? this.renderNamList() : this.renderLoading();
-
+    var namList = !this.state.query && !this.state.filter ? <Text></Text> : <NamList query={this.state.query} onSelected={this.onSelected} />;
     return (
       <View style={styles.container}>
       <TextInput
@@ -84,8 +55,8 @@ var Search = React.createClass({
         autoCorrect={false}
         autoFocus={true}
         clearButtonMode={'always'}
-        onChangeText={(query) => this.setState({query})}
-        value={this.state.query}
+        onChangeText={(searchText) => this.setState({query: '', searchText})}
+        value={this.state.searchText}
         onSubmitEditing={this.onSearch}
         returnKeyType={'search'}
         placeholder={'Search for NAMs'}
@@ -104,24 +75,6 @@ var styles = StyleSheet.create({
     flex: 1,
     marginTop: 65,
     backgroundColor: '#F5FCFF'
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: '#FFFFFF',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#DDDDDD'
-  },
-  listView: {
-    paddingTop: 20,
-    backgroundColor: '#F5FCFF',
   }
 });
 
